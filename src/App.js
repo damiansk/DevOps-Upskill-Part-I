@@ -1,95 +1,77 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import styles from './App.module.css';
-
-const API_URL = '/api/tasks';
+import TodoList from './components/TodoList';
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
-  const [newTaskTitle, setNewTaskTitle] = useState('');
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
 
   useEffect(() => {
-    fetchTasks();
+    fetchTodos();
   }, []);
 
-  const fetchTasks = async () => {
+  const fetchTodos = async () => {
     try {
-      const response = await axios.get(API_URL);
-      setTasks(response.data);
+      const response = await axios.get('http://localhost:3000/api/todo');
+      setTodos(response.data);
     } catch (error) {
       console.error('Błąd podczas pobierania zadań:', error);
     }
   };
 
-  const addTask = async () => {
+  const handleAddTodo = async () => {
     try {
-      const response = await axios.post(API_URL, { title: newTaskTitle });
-      setTasks([...tasks, response.data]);
-      setNewTaskTitle('');
+      const response = await axios.post('http://localhost:3000/api/todo', {
+        title: newTodo,
+        description: '',
+        status: false,
+      });
+      setTodos([...todos, response.data]);
+      setNewTodo('');
     } catch (error) {
       console.error('Błąd podczas dodawania zadania:', error);
     }
   };
 
-  const updateTaskStatus = async (taskId, newStatus) => {
+  const handleToggleStatus = async (todoId, currentStatus) => {
     try {
-      await axios.put(`${API_URL}/${taskId}`, { status: newStatus });
-      const updatedTasks = tasks.map(task => {
-        if (task.id === taskId) {
-          return { ...task, status: newStatus };
-        }
-        return task;
+      await axios.put(`http://localhost:3000/api/todo/${todoId}`, {
+        status: !currentStatus,
       });
-      setTasks(updatedTasks);
+      const updatedTodos = todos.map((todo) =>
+        todo.id === todoId ? { ...todo, status: !currentStatus } : todo
+      );
+      setTodos(updatedTodos);
     } catch (error) {
-      console.error('Błąd podczas aktualizowania statusu zadania:', error);
+      console.error('Błąd podczas zmiany statusu zadania:', error);
     }
   };
 
-  const deleteCompletedTasks = async () => {
+  const handleDeleteTodo = async (todoId) => {
     try {
-      const completedTasks = tasks.filter(task => task.status === 'completed');
-      const taskIds = completedTasks.map(task => task.id);
-      await Promise.all(taskIds.map(taskId => axios.delete(`${API_URL}/${taskId}`)));
-      const updatedTasks = tasks.filter(task => task.status !== 'completed');
-      setTasks(updatedTasks);
+      await axios.delete(`http://localhost:3000/api/todo/${todoId}`);
+      const updatedTodos = todos.filter((todo) => todo.id !== todoId);
+      setTodos(updatedTodos);
     } catch (error) {
-      console.error('Błąd podczas usuwania zakończonych zadań:', error);
+      console.error('Błąd podczas usuwania zadania:', error);
     }
   };
 
   return (
-    <div className={styles.container}>
-      <h1 className={styles.heading}>Lista zadań</h1>
-      <div className={styles.inputContainer}>
-        <input
-          type="text"
-          value={newTaskTitle}
-          onChange={e => setNewTaskTitle(e.target.value)}
-          placeholder="Nowe zadanie"
-          className={styles.input}
-        />
-        <button onClick={addTask} className={styles.addButton}>
-          Dodaj zadanie
-        </button>
-      </div>
-      <ul className={styles.taskList}>
-        {tasks.map(task => (
-          <li key={task.id} className={styles.taskItem}>
-            <span>{task.title}</span>
-            <button onClick={() => updateTaskStatus(task.id, 'completed')} className={styles.deleteButton}>
-              Usuń
-            </button>
-          </li>
-        ))}
-      </ul>
-      <button
-        disabled={tasks.filter(task => task.status === 'completed').length === 0}
-        onClick={deleteCompletedTasks}
-        className={styles.deleteCompletedButton}
-      >
-        Usuń zakończone zadania
-      </button>
+    <div className="app">
+      <h1>Todo App</h1>
+      <input
+        type="text"
+        value={newTodo}
+        onChange={(e) => setNewTodo(e.target.value)}
+        placeholder="Dodaj nowe zadanie..."
+      />
+      <button onClick={handleAddTodo}>Dodaj</button>
+      <TodoList
+        todos={todos}
+        handleToggleStatus={handleToggleStatus}
+        handleDeleteTodo={handleDeleteTodo}
+      />
     </div>
   );
 };
