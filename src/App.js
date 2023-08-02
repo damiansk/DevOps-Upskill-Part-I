@@ -12,7 +12,7 @@ const App = () => {
 
   const fetchTodos = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/todo');
+      const response = await axios.get('/api/todo');
       setTodos(response.data);
     } catch (error) {
       console.error('Błąd podczas pobierania zadań:', error);
@@ -21,7 +21,7 @@ const App = () => {
 
   const handleAddTodo = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/todo', {
+      const response = await axios.post('/api/todo', {
         title: newTodo,
         description: '',
         status: false,
@@ -35,7 +35,7 @@ const App = () => {
 
   const handleToggleStatus = async (todoId, currentStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/todo/${todoId}`, {
+      await axios.put(`/api/todo/${todoId}`, {
         status: !currentStatus,
       });
       const updatedTodos = todos.map((todo) =>
@@ -49,7 +49,7 @@ const App = () => {
 
   const handleDeleteTodo = async (todoId) => {
     try {
-      await axios.delete(`http://localhost:3000/api/todo/${todoId}`);
+      await axios.delete(`/api/todo/${todoId}`);
       const updatedTodos = todos.filter((todo) => todo.id !== todoId);
       setTodos(updatedTodos);
     } catch (error) {
