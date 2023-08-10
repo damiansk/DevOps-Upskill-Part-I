@@ -5,10 +5,16 @@ import TodoList from './components/TodoList';
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
+  const [logoUrl, setLogoUrl] = useState(null);
 
-  useEffect(() => {
-    fetchTodos();
-  }, []);
+  const fetchLogo = async () => {
+    try {
+      const response = await axios.get('/api/s3');
+      setLogoUrl(response.data.signedUrl);
+    } catch (error) {
+      console.error('Błąd podczas pobierania loga:', error);
+    }
+  };
 
   const fetchTodos = async () => {
     try {
@@ -18,6 +24,11 @@ const App = () => {
       console.error('Błąd podczas pobierania zadań:', error);
     }
   };
+
+  useEffect(() => {
+    fetchLogo();
+    fetchTodos();
+  }, []);
 
   const handleAddTodo = async () => {
     try {
@@ -59,6 +70,9 @@ const App = () => {
 
   return (
     <div className="app">
+      {logoUrl ?
+        <img width={200} src="logoUrl" alt="Dog on old Windows XP wallpaper" />
+        : null}
       <h1>Todo App</h1>
       <input
         type="text"
@@ -72,7 +86,7 @@ const App = () => {
         handleToggleStatus={handleToggleStatus}
         handleDeleteTodo={handleDeleteTodo}
       />
-    </div>
+    </div >
   );
 };
 
