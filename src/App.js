@@ -71,7 +71,7 @@ const App = () => {
   return (
     <div className="app">
       {logoUrl ?
-        <img width={200} src="logoUrl" alt="Dog on old Windows XP wallpaper" />
+        <img width={200} src={logoUrl} alt="Dog on old Windows XP wallpaper" />
         : null}
       <h1>Todo App</h1>
       <input
