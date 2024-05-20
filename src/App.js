@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import TodoList from './components/TodoList';
 
 const App = () => {
@@ -73,7 +73,7 @@ const App = () => {
       {logoUrl ?
         <img width={200} src={logoUrl} alt="Dog on old Windows XP wallpaper" />
         : null}
-      <h1>Todo App</h1>
+      <h1>New version of the TODO App!!!</h1>
       <input
         type="text"
         value={newTodo}
