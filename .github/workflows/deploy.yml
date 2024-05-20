@@ -1,0 +1,62 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check code formatting
+        run: npm run lint
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Trigger App Update
+        id: trigger
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.PAT }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: 'damiansk',
+              repo: 'DevOps-Upskill-Part-II',
+              workflow_id: 'apps.yml',
+              ref: 'main'
+            })
+      # - name: Wait for Workflow
+      #   uses: actions/github-script@v6
+      #   with:
+      #     github-token: ${{ secrets.PAT }}
+      #     script: |
+      #       const runId = '${{ steps.trigger.outputs.run-id }}';
+      #       const waitTime = 60; // Wait for 60 seconds
+
+      #       while (true) {
+      #         try {
+      #           const run = await github.rest.actions.getWorkflowRun({
+      #             owner: context.repo.owner,
+      #             repo: context.repo.repo,
+      #             runId: runId
+      #           });
+
+      #           if (run.data.status === 'completed') {
+      #             console.log(`Workflow run completed with conclusion: ${run.data.conclusion}`);
+      #             break;
+      #           } else {
+      #             console.log(`Workflow run status: ${run.data.status}`);
+      #             await new Promise(resolve => setTimeout(resolve, waitTime * 1000));
+      #           }
+      #         } catch (error) {
+      #           console.log(`Error waiting for workflow run: ${error}`);
+      #           break;
+      #         }
+      #       }
