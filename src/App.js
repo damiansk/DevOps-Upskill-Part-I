@@ -2,6 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import TodoList from './components/TodoList';
 
+const VERSION = process.env.REACT_APP_VERSION;
+
 const App = () => {
   const [todos, setTodos] = useState([]);
   const [newTodo, setNewTodo] = useState('');
@@ -70,10 +72,14 @@ const App = () => {
 
   return (
     <div className="app">
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <div style={{ marginRight: '10px' }}>Version:</div>
+        <div style={{ fontWeight: 'bold' }}>{VERSION}</div>
+      </div>
       {logoUrl ?
-        <img width={200} src={logoUrl} alt="Dog on old Windows XP wallpaper" />
+        <img width={200} src={logoUrl} alt="TODO app logo" />
         : null}
-      <h1>Old version of the TODO App!!!</h1>
+      <h1>TODO App</h1>
       <input
         type="text"
         value={newTodo}
