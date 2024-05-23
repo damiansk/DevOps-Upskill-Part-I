@@ -37,7 +37,7 @@ jobs:
               workflow_id: 'apps.yml',
               ref: 'main'
               inputs: {
-                app_version: $REACT_APP_VERSION
+                app_version: process.env.REACT_APP_VERSION
               }
             })
       # - name: Wait for Workflow
