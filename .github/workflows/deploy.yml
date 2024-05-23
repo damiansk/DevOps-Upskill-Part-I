@@ -14,22 +14,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Load env file
-        run: |
-          source .env
-          echo $REACT_APP_VERSION
-
       - name: Check code formatting
         run: npm run lint
 
       - name: Run tests
         run: npm run test
 
+      - name: Load env file
+        run: |
+          source .env
+
       - name: Trigger App Update
         id: trigger
         uses: actions/github-script@v6
-        env:
-          APP_VERSION: $REACT_APP_VERSION
         with:
           github-token: ${{ secrets.PAT }}
           script: |
@@ -39,7 +36,7 @@ jobs:
               workflow_id: 'apps.yml',
               ref: 'main'
               inputs: {
-                app_version: process.env.APP_VERSION
+                app_version: process.env.REACT_APP_VERSION
               }
             })
       # - name: Wait for Workflow
