@@ -34,7 +34,7 @@ jobs:
               owner: 'damiansk',
               repo: 'DevOps-Upskill-Part-II',
               workflow_id: 'apps.yml',
-              ref: 'main'
+              ref: 'main',
               inputs: {
                 app_version: process.env.REACT_APP_VERSION
               }
