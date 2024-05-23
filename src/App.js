@@ -73,7 +73,7 @@ const App = () => {
       {logoUrl ?
         <img width={200} src={logoUrl} alt="Dog on old Windows XP wallpaper" />
         : null}
-      <h1>New version of the TODO App!!!</h1>
+      <h1>Old version of the TODO App!!!</h1>
       <input
         type="text"
         value={newTodo}
