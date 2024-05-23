@@ -21,8 +21,10 @@ jobs:
         run: npm run test
 
       - name: Load env file
+        id: env
         run: |
           source .env
+          echo "app_version=$REACT_APP_VERSION" >> $GITHUB_OUTPUT
 
       - name: Trigger App Update
         id: trigger
@@ -37,7 +39,7 @@ jobs:
               workflow_id: 'apps.yml',
               ref: 'main',
               inputs: {
-                app_version: process.env.REACT_APP_VERSION
+                app_version: "${{ steps.env.outputs.app_version }}"
               }
             })
       # - name: Wait for Workflow
