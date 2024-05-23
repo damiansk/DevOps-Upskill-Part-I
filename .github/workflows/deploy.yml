@@ -30,6 +30,7 @@ jobs:
         with:
           github-token: ${{ secrets.PAT }}
           script: |
+            console.log(process.env)
             await github.rest.actions.createWorkflowDispatch({
               owner: 'damiansk',
               repo: 'DevOps-Upskill-Part-II',
